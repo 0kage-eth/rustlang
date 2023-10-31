@@ -58,8 +58,109 @@ fn main() {
    let x : (i32, f64, char) = (44, 3.555, 'k');
    let x_char = x.2;
    println!("name in the tuple {x_char}"); 
-         
+   let x_array: [u32; 5] = [1, 2, 3, 4, 5]; // defined an array with u32 with 5 elements
+   let x_array_initialized = [3; 5]; // initializes x_array with size 5 and all elements 3
+  let fifth_element = x_array_initialized[4];
+  println!("fifth element {fifth_element}");         
+  sub_func(); // calling function defined below
+  let sub_val = sub_func2_return_val();
+  println!("sub func return val: {sub_val}");
+  let isGreater = sub_func_if(99);
+  println!("is greater: {isGreater}");
+  let multi_val: u32 = sub_else_if(99);
+  println!("multi val from else if; {multi_val}");
+  let loop_var:u32 = loop1();
+  println!("final value of loop_var: {loop_var}");  
+  let remaining:u32 = loop_with_labels();
+  while_for();
 }
 
 
 
+    fn sub_func(){
+     println!("inside sub func");
+    }
+    
+
+    fn sub_func2_return_val() -> u32{
+     5
+    }// shortform to define a function
+    // note that in this case, return value is defined as an expression
+    // perfectly valid to assign it to a variable
+
+
+    fn sub_func3_input_return_val(x: u32) -> u32{
+     x+ 5
+    }//note that this is an expression
+    // if we place a semi colon after x+5, it becomes a statement
+    // in that case, assigning it to a variable using let throws an error
+    // very important classification between expression and statement 
+    
+    fn sub_func_if(val: u32) -> bool{
+     if val > 50 {
+       true
+     }
+     else{
+      false
+     }
+    }
+    fn sub_else_if(val:u32)->u32{
+      if val > 1000{
+       45
+      }
+      else if val>500{
+       35
+      }
+      else if val > 100 {
+       25
+      }
+      else{
+       10
+      }
+    }
+
+
+   fn loop1()->u32{
+    let mut i: u32 = 0;
+    loop{
+     if i>32{ break;}
+     i = i + 1;
+     println!("current i {i}");
+    }
+    i+20
+   }
+
+   fn loop_with_labels() ->u32{
+   
+    let mut index:u32 = 0;
+    'outer: loop{
+       let mut remaining:u32 = 100;
+       loop{
+        println!("remaining: {remaining}");
+        if remaining < 60{ break;}
+        
+        if index > 2 {break 'outer;}
+        remaining -= 10;
+       } 	       
+
+       index += 1;
+       println!("index val: {index}");
+    }
+    index
+  }
+
+  fn while_for(){
+   let a:[i32;5] = [1,2,3,4,5];
+   let mut i = 0;
+   while i < 5{
+     println!("current val of array {}", a[i]);
+     i += 1;
+   }
+   for element in a{
+     println!("currene element {element}");
+   }
+
+   for number in (1..5).rev() {
+    println!("number in reverse {number}");
+   }
+  }

@@ -35,6 +35,8 @@
 although we changed the variable, it is still immutable for the rest of the scope
 - another difference here is that in case of shadowing, we are effectively creating a new variable -> hence, we can change the type of the variable. Incase of mutable variable, type of variable cannot be changed
 
+---
+
 ###Data types
 - Each variable must be declared with its type
 - Rust is a statically typed language -> all variable names should be known in advance
@@ -73,4 +75,67 @@ _Compound Types_
 _Arrays_
 
 - arrays are defined using square brackets
+- For fixed length, we use arrays -> for variable length, where array size can expand or shrink, we use vectors
+- when we try to access index element more than array length -> rust panics because it cannot find mmemory allocated and reverts -> note that this is a runtime error here
+
+
+---
+
+### Functions
+
+- `fn` keyword allows users to define new functions
+- `main` is the most important function -> entry point
+- we can call one function inside another -> rust doesn't care where we define functions -> could be before or after the function which calls another function
+- statements do not return a value, expressions do
+- expressions evaluate to a value
+- in rust, function definitions are statements
+- functions returning value -> we don't name return values but we must use `->` to define type of return value -> this is similar to javascript way of defining functions with return values
+
+- function below is a statement
+```
+fn plus_one(x: i32) -> i32 {
+    x + 1;
+}
+```
+- this implicitly returns a () whereas, if it is used to assign a variable using `let`, we end up having an issue, because let expects a u32 or i32 whereas function returns empty as the above is a statement
+
+  
+- function below is an expression
+
+```
+fn plus_one(x: i32) -> i32 {
+    x + 1
+}
+```
+
+- the first function cannot be assigned to a variable as it returns a statement
+- second function can be assigned to a variable as it returns an expresssion
+
+---
+
+_Conditionals_
+
+- `IF` expression -> used for conditional logic like any other programming lang
+- standard if-> else
+- note that condition inside if expression must return a bool -> unlike JS, it does not convert a non boolean type to a boolean type
+
+- following throws an error because if expression does not return a bool type(note that this works well in JS)
+```
+    fn testIf(val: u32)-> bool{
+      if val{
+        true
+      }
+    }
+```
+- multiple conditions can be hangdled via `else if`
+
+_Loops_
+- 3 ways in which we can run loop - using `loop`, `for` and `while`
+- use the `break` key word to exit a loop
+- use `continue`keyword to skip current iteration and move to next one
+- use the `'` (single quote) to disambiguate between multiple loops
+- so you can assign a loop label -> and use that label with `break`or `continue` to apply logic
+on any specific loop (outermost or innermost or anything in between)
+- `while` loop executes while a condition is true -> risky when handling fixed sized arrays
+- `for` loop is safer and concise when dealing with fixed size arrays
 
