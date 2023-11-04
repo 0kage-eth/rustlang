@@ -37,6 +37,7 @@ _Comparisons_
 - much faster to handle memory on stack because it is all at one place
 - When code calls a function -> including the pointers to the heap and function's local variables are pushed to the stack. When function execution is complete, these values get popped off the stack
 
+---
 
 ### Challenges of memory management
 - Programs face the following issues, specially related to memory on the heap
@@ -277,6 +278,117 @@ i// is concerned
 ```
 
 - To do the above, we need to add the `mut` keyword infront of the variable, signifying that the variable is mutable. We also need to add the `mut` keyword to the variable in the function signature
+
+
+- A big and important restriction here is that only one mutable reference variable can be defined at any one time -> this is to avoid race to write to memory -> so, if we have a mutable reference to a value in memory, you can have no other mutable references to that value
+
+
+
+```
+fn main() {
+
+    let mut s = String::from("hello there");
+
+    let &mut r = s;
+    let &mut p = s;
+
+    println!("{}, {}", r, p);
+}
+```
+
+Code above breaks because we have 2 mutable references pointing to the same value;
+
+- It is the same if the mutable reference is defined for a value that also has immutable reference
+
+
+```
+fn main(){
+    let mut s = String.from("hello");
+    
+    let &s1 = s; // immutable variable reference s1
+    let &s2 = s; // immutable variable reference s2
+
+    let &mut s3 = s; //mutable reference
+
+    println!("{}, {}, {}", s1, s2, s3}; // this will break
+    // s1 and s2 have a valid scope and s3, a mutable defined in same scope
+
+}
+```
+
+- In the above, while s1 and s2 have active scope till the `print` statement, s3, a mutable reference is defined. This is not allowed because the immutable variables don't expect a sudden change to the values that they are pointing to. This can cause race to access memory and rust stops this
+
+
+- However, as shown above, it is ok for multiple immutable references pointing to the same value. Since there is no risk for a memory overwrirte, rust does not give a compile error
+
+
+- Consider another example
+
+```
+fn main(){
+    let mut s = String.from("hello");
+
+    let &s1 = s;
+    let &s2 = s;
+
+   println!("{}, {}", s1, s2);
+ 	
+   let &mut s3 = s;
+   
+}
+
+```
+
+The above code is valid -> because by the time s3 is defined as a mutable references, scope of s1 and s2 has already ended with print statement. So, it is important to track scopes of variables while assigning mutable references.
+
+### Dangling references
+
+- Dangling references are reference variables that point to memory that is allotted to someone else. Could cause serious issues as the programmer makes wrong assumptions on data availability of the pointer
+
+- In Rust, dangling references are not allowed. If we have a reference to a value, that value cannot be removed if the reference is still in scope.
+
+- Reference to data must go out of scope BEFORE the data does
+
+
+
+```
+fn main(){
+
+    let s = String.from("heyaa"); 
+    let &ptr = dangler(s); // this throws an error
+    // pointer has an existence beyond the data that is pointing to
+
+   // rust does not allow such pointers to exist
+    
+}
+
+
+function dangler(s: String) -> &String{
+
+   &s
+}
+
+
+```
+
+### Summary
+
+To summarize, rules of reference:
+
+1. at any given time, you can have one mutable reference or any number of immutable references
+2. references must always go out of scope BEFORE the data they are referring to
+
+
+---
+
+## Slice Type
+
+
+### What is slice
+
+- contiguous sequence of elements in collection
+- slice allows subset of the whole collection
+- slice is like a reference and does not have ownership
 
 
 

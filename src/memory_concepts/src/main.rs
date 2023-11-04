@@ -61,3 +61,8 @@ fn append_string(s:&mut String) -> usize{
 } // note that we are no returning new_s because s is already updated
 
 
+fn find_first_word(s:&String) -> usize{ // returns the size of string corresponding to first word
+        
+}
+
+}
