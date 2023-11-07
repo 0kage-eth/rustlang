@@ -390,10 +390,106 @@ To summarize, rules of reference:
 - slice allows subset of the whole collection
 - slice is like a reference and does not have ownership
 
+- Consider following function to understand utility of slices
+
+
+```
+fn find_first_word(s:&String) -> usize{ // returns the size of string corresponding to first word
+    let s_bytes = s.as_bytes(); // converts string to an array of bytes
+
+    for (i, &item) in s_bytes.iter().enumerate(){
+        if item == b''{
+            return i;
+        }
+    }
+    s.len();
+}
+
+```
+
+- Here is what we see in this:
+   - We first convert a string type to a bytes array by using `as_bytes()` method on string
+   - Next we run a `for` loop by first converting `s_bytes` into an array using `s_bytes.iter().enumerate()`
+
+   - `iter` is a method that returns each element in a collection and `enumerate` wraps the result of `iter` and returns a tuple -> first element in tuple is the index and the second element is the actual element in the collection -> note that we are passing element in collection as reference -> this is again a dynamic type that is stored in heap -> `enumarate` gives a reference of the tuple element -> to preserve its existence, we borrow the item via reference
+
+- PRoblem with the above function is that it is returning only the position of space and not returning the first word instead. In scenarios where the string itself is changes, the above function has no clue that something has changed and it still continues to hold the previous value
 
 
 
+```
+    fn main(){
+        let mut s = String.from("Hello World");
+        let first_index = find_first_word(& s);
 
+        s.clear(); // this empties string
+        println!("value of first index {first_index}"); // continues to hold value 5 
+	// as far as first index is concerned -> it calculated value on the original string and stored that value. It will continue to return 5 even when string no longer exists
+   }
+```
+
+
+- String slices are reference pointers that only point to a part of the string and not the whole. A string slice can be represented as `&s[start_index..end_index]`. This rerepresents that a string reference starting from start_index and going for a length of `end_index-start_index` will be picked from memory (again, as reference pointer). Internally, the slice pointer will point to the specific index and have a length of `end-start`.
+
+Here is how the memory pointer works
+
+![String Slice](../imgs/Slice.jpeg)
+
+- note that a slice is of `&str` type. And it is always a reference
+
+- Now, using slices, if we redefine our function as follows:
+
+```
+fn find_first_word_with_index(s:&String)-> (usize, &str){
+     let s_bytes = s.as_bytes();
+
+     for (i, &item) in s_bytes.iter().enumerate(){
+       if item == b' '{
+        return (i, &s[..i]);
+       }
+     }
+     (s.len(), &s[..])
+
+}
+
+```
+
+- Note in the above function that we are returning a string slice along with the length. slice is ofcourse a reference.
+
+let's say if we do the following:
+
+```
+
+fn main(){
+    let mut s = String::from("Hello there. Good Morning");
+    let (indx, slicer) = find_first_word_with_index(&s);
+
+    s.clear();
+
+    println!("length if {indx}, slice is {}", slicer);
+
+}
+```
+
+
+- This throws an error because of first principles -> while there is an immutable reference (`slicer`), we are trying to also have a mutable reference to `s`. This cannot exist as the immutable reference is still in scope when it is accessed via the `println!` statement -> this gives a compile error
+
+- So what was working wrongly in the previous case is now automatically caught by compiler using the slicing functionality
+
+
+- An improvement to the above function `find_first_word_with_index` is to replace the `&String` type in inputs with a `&str`. This is more generic as we can always pass a `String` as a slice `s[..]`. This gives us the added flexibility that instead of whole String, we can pass any specific slice starting from any start index,. So signature can be as follows
+
+`fn find_first_word_with_index(s:&str) -> (usize, &str){
+ ....
+}`
+
+
+
+### Summary
+
+- Concepts of ownership, borrowing, mutable and immutable references allows us to get control on memory usage in rust
+
+- Clearing memory when it is out of scope, and handling dangling pointers and mutable/immutable references with a set of rules allows rust to safely manage memory for us without additional code
 
 
 

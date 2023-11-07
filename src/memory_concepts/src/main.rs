@@ -14,6 +14,15 @@ fn main() {
     let mut s4 = String::from("Head ");
     let new_length = append_string(&mut s4);
     println!("new length {}, new string: {}", new_length, s4);
+
+    let s5= String::from("Good heart wins good friendships");
+    let s6 = slices(&s5, 10);
+    println!("slices string {}", s6);     
+    
+    let (i, sliced_str) = find_first_word_with_index(&s5);
+
+    println!("index of first space {i}, sliced string {}", sliced_str); 
+
 }
 
 fn test_string_assignment(){
@@ -62,7 +71,33 @@ fn append_string(s:&mut String) -> usize{
 
 
 fn find_first_word(s:&String) -> usize{ // returns the size of string corresponding to first word
-        
+    let s_bytes = s.as_bytes(); // converts string to an array of bytes
+
+    for (i, &item) in s_bytes.iter().enumerate(){
+        if item == b' '{ // denotes byte literal for space
+            return i;
+        }
+    }
+    s.len()
 }
+
+
+fn slices(s:&String, length:usize) -> &str{
+ 
+ let s2 = &s[..length];
+ &s2
+}
+
+// we can modify the find_first_word function to return both index and slice as follows
+
+fn find_first_word_with_index(s:&String)-> (usize, &str){
+     let s_bytes = s.as_bytes();
+
+     for (i, &item) in s_bytes.iter().enumerate(){
+       if item == b' '{
+        return (i, &s[..i]);
+       }
+     }
+     (s.len(), &s[..])
 
 }
