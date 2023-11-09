@@ -62,7 +62,52 @@ fn createNewStudent(name: String, active: bool, rollId: u32, email:String ) -> S
 - the property that is moved to s2 via assignment (`=`) will be lost in s1. Memory corresponding to that property is cleared by memory allocator and no longer be accessible. Extrenely important that we avoid errors related to moving data in structs -> can cause complex issues
 
 
+- Tuple struct instances can be defined without named variables defining struct properties.They are called Tuple structs because they look like tuples.
 
 
 
+```
+struct Color(i32, i32, i32);
+```
 
+
+- Unit struct - we also have a unit struct that have no properties attached to it (not sure why this would be needed). Docs say that one example for this is to implement behavior of this type such that every instance of this type is always equal to ecvery instance of other type (need to look into example). Such structs do not need any curly brackets while definition and can be assigned without any paranthesis
+
+```
+struct UnitStructExample;
+
+fn main(){
+  let c = UnitStructExample; // no paranthesis or curlies here
+}
+```
+
+
+
+## Ownership of data in structs
+
+
+- A good design for structs is to own all the data if its properties. So instead of using &str (a string slice type by reference), we prefer a String which is immutable reference to the data. This would mean that any assigning of struct data would result in moving of data and the property will no longer have access to that data location 
+
+- A good design is where data inside properties is valid as long as the struct is valid
+
+
+- So following will give an error - compiler will complain that it does not have lifetime specifiers inside struct
+
+
+```
+
+struct Student{
+ email: &str;
+ rollnumber: u32;
+}
+
+
+fn main(){
+    let mut s = Student{
+		    email:"kaga@kage.com",
+		    rollnumber:22,
+		};
+
+}
+
+```
