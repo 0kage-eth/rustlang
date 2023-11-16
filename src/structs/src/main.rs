@@ -65,4 +65,3 @@ struct Parent{
  name: String,
  rollId: u32, //rollId of student 
 }
-

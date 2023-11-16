@@ -83,7 +83,7 @@ fn main(){
 
 
 
-## Ownership of data in structs
+###  Ownership of data in structs
 
 
 - A good design for structs is to own all the data if its properties. So instead of using &str (a string slice type by reference), we prefer a String which is immutable reference to the data. This would mean that any assigning of struct data would result in moving of data and the property will no longer have access to that data location 
@@ -111,3 +111,20 @@ fn main(){
 }
 
 ```
+
+### Adding functionality with derived traits
+
+- in the past lessons we extensively used println! macro -> using a println! on a struct will not work though because curly brackets tell println to use `Display`formatting that is not defined on struct
+
+- this is not an issue with primitive types because `Display` is defined by default
+
+- to correct this we use following statement
+
+```
+println!("printing rectange {:?}" rect);
+
+```
+
+- note that we changed `{}`to `{:?}`
+- this still does not work -> error we see is that #[derive(Debug)] needs to be added to struct 
+- Rust has functionality to print debug info but we have to explicitly opt in for that
