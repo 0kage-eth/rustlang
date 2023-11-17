@@ -15,6 +15,27 @@ fn main() {
     println!("3. area struct: {}", area_struct(&r));
     
     println!("printing rectangle: {:?}", r);    
+    println!("printing rectangle better formatting: {:#?}", r);
+    
+    let s = dbg!(20 * l); 
+    println!("value of s is {}", s);
+
+    dbg!(&r); //note we passed a reference so that ownership does not get transferred
+
+    println!("area by defining method inside struct {}", r.area());
+
+    println!("breadth the variable, {}", r.breadth);
+    println!("breadth the function, {}", r.breadth());
+
+    let r2 = Rectangle{length: 10, breadth: 4};
+    let r3 = Rectangle{length: 4, breadth: 2};
+
+     println!("r2 contained in r? {}", r.contains(&r2));
+     println!("r3 contained in r? {}", r.contains(&r3));
+
+     let sq = Rectangle::square(10);
+
+     println!("square {:#?}",sq); 
 }
 
 #[derive(Debug)]
@@ -23,6 +44,26 @@ struct Rectangle{
     breadth: u32,
 }
 
+impl Rectangle {
+   fn area (&self) -> u32 {
+     self.length * self.breadth
+  }
+
+  fn breadth(&self) -> bool{
+    self.breadth > 0
+  }
+
+  fn contains(&self, other: &Rectangle) -> bool{
+     other.length <= self.length && other.breadth <= self.breadth	
+  }
+}
+
+impl Rectangle{
+    fn square(side: u32) -> Self{
+      Self{length: side, breadth: side}
+    }
+
+}
 
 // crude implementation
 fn area(length: u32, breadth: u32) -> u32 {

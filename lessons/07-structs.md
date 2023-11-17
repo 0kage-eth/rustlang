@@ -128,3 +128,79 @@ println!("printing rectange {:?}" rect);
 - note that we changed `{}`to `{:?}`
 - this still does not work -> error we see is that #[derive(Debug)] needs to be added to struct 
 - Rust has functionality to print debug info but we have to explicitly opt in for that
+
+
+- Note that just like `println!`, we hav`dbg!` - difference here is dbg takes ownership of variable where as println! takes the reference of variable. 
+
+
+- `dbg!` is a great way to debug and print out what is happening at each step
+
+
+---
+
+### Associating functions with specific structs
+
+
+- in the above example, we have seen area function -> but that function is not closely coupled with the Rectangle struct
+
+- in order to do so, we define what are called `methods` -> methods, unlike functions, are defined within the scope of the struct.  first parameter of method is always `self`
+
+- To define the scope of the struct, we use the `impl` keyword - everything inside `impl` is within the scope of Rectange
+
+- `&self` here is short of `self:&Self` - within `impl`, Self is an alias for the type that the impl block is for -> **all methods must hve a first parameter self of Self type. Rust lets us abbreviate with just self**
+
+- IF we want to change the instance that we've called method for we would pass `mut &self`instead indicating mutability of its instance
+
+- using `self`allows to move ownership -> this is rarely used but possible. You would use this in rare situations where the method transforms the instance into something else and caller will not have access to the original instance after calling the method (not sure when this is needed)
+
+
+- note that a method can share name with a property -> any invoking of a method needs the `()`. often when we do this, we use the method to get the value stored in property -> such functions are called getters (we see this concept in solidity as well)
+
+- Rust does not implement getters automatically for struct fields (unlike in solidity)
+
+- In C/C++ -> we have this important difference, `.` is used to call methods on object and `->` is used to call methods on a pointer to the object. In Rust, compiler automatically detects the way `self` was used in signature and basically either borrows, borrows with mutability or owns. Rust automatically adds `&`, `&mut` or `*` to the object so that object matches signature of method. 
+
+So, if the signature has an object passed by reference, then following are same, although first one looks much cleaner
+
+
+```
+p1.get(&p2)
+(&p1).get(&p2)
+
+```
+
+- Reading is `&p`, Mutating is `&mut p` and Consuming is `p`
+
+- Associated functions that don't need `self` instance of struct can also be defined inside the `impl` block. 
+
+- In this case, we can call the associated functions ddefined on a struct by using `::`
+
+- For eg. we can define a function that returns a square object given its side
+
+
+```
+impl Rectangle{
+ 
+   fn square(side: u32) -> Self{
+
+	Self{length: side, breadth: side}
+   }
+
+}
+
+```
+
+
+And this can be used inside a main as follows
+
+```
+fn main(){
+    let squarish_rectangle = Rectangle::square(10);
+}
+
+```  
+
+
+- Note that we called the function even without any active Rectangle instance
+
+- Note also that we can have multiple implementatioln blocks
