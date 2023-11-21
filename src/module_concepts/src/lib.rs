@@ -1,25 +1,7 @@
-mod front_of_house{
-    pub mod hosting{
-	pub fn add_to_waitlist(){}
-        
-        fn seat_at_table(){}
-    }
+mod front_of_house;
 
 
-    mod serving {
-
-      fn take_order(){}
-
-
-      fn serve_order(){}
-
-
-      fn take_payment(){}
-
-    }
-
-
-}
+fn deliver_order(){}
 
 mod back_of_house{
     pub struct Breakfast{
@@ -32,9 +14,23 @@ mod back_of_house{
 	    Breakfast{toast: String::from(toast_choice), fruit: String::from("peaches")}
        } //-n only toast can be chosen, not the fruits
 	// say toast is chosen by customer and fruit is given by chef (use case)
-
+	
+      	
    }
 
+   fn cook_order(){}
+  
+   fn prepare_order(){
+      cook_order();
+      super::deliver_order();
+   }
+
+   #[derive(Debug)]
+   pub enum Appetizer{
+	Soup,
+	Salad,
+	Starters,	
+   }
     
 
 }
@@ -43,7 +39,7 @@ mod back_of_house{
 pub fn eat_at_restaurant(){
 
      // absolute path
-     crate::front_of_house::hosting::add_to_waitlist();
+     //crate::front_of_house::hosting::add_to_waitlist();
 
      // relative path
      front_of_house::hosting::add_to_waitlist();
@@ -57,4 +53,15 @@ pub fn eat_at_restaurant(){
 
      println!("new toast of breakfast {}", meal.toast);
 
-    //  println!("seasonal fruit {}", meal.fruit);}
+    //  println!("seasonal fruit {}", meal.fruit);
+
+    let mut appetizer = back_of_house::Appetizer::Salad;
+
+    println!("appetizer chosen {:?}", appetizer);
+
+
+    appetizer = back_of_house::Appetizer::Soup;
+    println!("appetizer changed to {:?}", appetizer);
+
+
+}

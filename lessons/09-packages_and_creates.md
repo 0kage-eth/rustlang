@@ -90,4 +90,150 @@ mod parernt_module{
 ### Enums and Struct as Public
 - Structs and enums can also be made public by the `pub` keyword. Although the struct is public and accessible, each of its elements are still private -> to make them public, we have to use `pub` keyword on each of them separately
 
-- 
+- In contrast, if we make enum public, all its variants are also public. default behavior here for enum is to be public, if the enum is declared with `pub` keyword
+
+
+
+### Use keyword
+
+- Defining large paths inside the code is cumbersome. That is where `use` comes into play. `use` creates a shortcut for path in scope and makes calling external functions or structs easy (with smaller signature)
+
+- Each use has a specific scope - and shortform notations are only applicable in that scope.
+
+
+For eg.
+
+
+```
+   mod parent{
+      
+     pub fn parent_fnc1(){}
+     
+     
+   }
+  
+  mod other_parent{
+     
+
+      use crate::parent::parent_fnc1;
+      fn other_parent_fnc(){
+           parent_fnc1(); // in this case, since use is in scope, this is valid
+      }
+
+     mod child{
+
+       fn child_func(){
+          // parent_fnc1();  ---- This will not work as scope has changed
+          super.parent_fnc1(); // this will work since the use has the same scope as super
+      }
+     } 
+      
+  }
+
+```
+
+
+- We can specify alias for a function or module using the `use`
+
+
+```
+   use std::fmt::Result;
+   use std::io::Result as ioResult; //-n not to be confused with above, we use a different name
+
+   let func1() -> Result{}
+
+   let func2() -> ioResult<()>{}
+
+
+```
+
+- Reexporting names with `pub use` -> we can bring a name into scope using `use` keyword and also make that public using `pub` keyword - so we combine pub and use to bring an item into scope and also making that available to others to bring into their scope - this technique is called re-exporting
+
+- re-exporting is done when the internal code structure differs from conventional way in which programmers call code or think about code structure. To make both consistent, re-exporting can be used
+
+
+
+
+### Using External Packages
+
+
+- We can add external packages to `Cargo.toml` and use them inside our project by bringing them into scope with `use` keyword
+
+- In the first chapter we added
+
+`rand=0.8.5` in our Cargo.toml
+
+- And then we added `use rand::Rng` to bring the package into use
+
+- Members of rust community have created many packages that can be used by bring them into scope and adding them to Cargo toml
+
+
+- Also, packages like `std` are shipped in default Rust. But they still need to be brought into scope by `use`
+for eg. `use std::collections::HashMap;`
+
+
+- We can also use nested paths to use multiple items from the same crate or module
+
+
+```
+use std::cmp::Ordering;
+use std::io;
+
+```
+
+
+can be changed to 
+
+```
+use std::{cmp::Ordering, io};
+```
+ 
+
+In cases where there multiple items from same crate/module are picked, we can use the `self` keyword
+
+
+```
+
+use std::io;
+use std::io::Write;
+```
+
+can be modified to
+
+```
+
+use std::io::{self, Write};
+```
+
+Above line brings `std::io` and `std::io::Write` into scope
+
+
+
+
+- If we want to bring all public items into scope, we can use the `*` as follows
+
+```
+use std::collections::*;
+```  
+
+- all public items, structs/sub modules/enums will be brought into scope. We call this the **Glob Operator**
+
+- Glob operator is often used to bring everything under scope while testing - we will see in future...
+
+
+
+### Moving modules into files
+
+
+- All mmodules at crate root level can be defined in their own files (instead of lib.rs) with the file name same as module name
+
+- All sub modules for module with crate root scope can be defined in a folder with name as module
+
+- Module can then include the sub modules in its scope using the `use` keyword.
+
+This placement is similar to file directory
+
+ 
+
+
+
