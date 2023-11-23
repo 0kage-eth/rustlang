@@ -85,3 +85,89 @@ for i in &mut v{
 
 - As seen above, typically a vector only stores a single data type
 - To get around this, if we know all types that can be used in a vector, we can simply use the enum type
+
+
+
+
+## Strings
+
+= String is a collection of bytes
+- Rust has only one `string` type in the core language -> and this a string slice `str`
+- This is usually used in a borrowed state in the form of `&str`
+
+- `String` type is provided by Rust's standard library rather than coded into the core language
+- `String` is growable, mutable, owned, UTF-8 encoded string type
+- When we refer to string, we are either referring to String or to string slice `str`
+- string slices are references to UTF-8 encoded string data stored elsewhere
+
+
+
+### String operations
+
+
+- For creating a new String, we use
+
+```
+ let mut s = String::new(); //-n creates a mutable string
+```
+
+
+- To create a new `string` literal, we can simplyt assign a string as below
+
+```
+ let d = "some random content"; // this creates a string literal
+```
+
+We can use the `to_string` method which is available on any type that implements `Display` trait
+
+
+- We can also use the `from` method on String, as we have been doing. to create a String from string literal as follows
+
+```
+    let s = String::from("initial random content");
+```
+ 
+
+- We can use the `push_str` method on String to append a string slice -> `push_str` takes a string slice because we don't necessarily want to take ownership of the input parameter. 
+
+```
+let mut s = String::from("0");
+let s2 = String::from("kage");
+s.push_str(s2); // s now has 0kage
+
+// since push_str takes a string slice, s2 still exists in scope
+// we can check this by a println! 
+
+println("s2 exists? {}", &s2);
+
+```
+In the above, if push_str would have taken onwership of s2, we wouldn't have been able to run a print on s2 later
+
+
+- We also have a `push` that takes a single character and adds to the string
+
+```
+
+ let mut s = String::from("0");
+
+ s.push("K");
+ s.push("a");
+ s.push("g");
+ s.push("e");
+
+```
+
+- `+` operator also works to add two strings -> you can either own/borrow variables while using `+` -> so be careful if you are owing variables as the original variable memory is gone
+
+- when using `+` operator, left string has to be owned and right string passed as reference. This is because `+` operator uses an `add` function with following signature
+
+```
+fn add(self, s: &str) -> String {
+``` 
+
+- Note that the second argument is of `&str` but even if we pass `&String` Rust compiles without an error > the reason this is possible is because Rust coerces the `&String` to `&str`
+
+- Note also that the first argument in `+` is owned rather than borrowed -> so it will no longer be valid after the + operation
+
+- 
+
