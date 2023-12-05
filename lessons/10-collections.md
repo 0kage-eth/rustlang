@@ -14,7 +14,7 @@
 
 ### Vectors
 
-- Vector is represented as `Vect<T>`
+- Vector is represented as `Vec<T>`
 - allow you to store more than one value of a single data type -> stored next to each other
 - stored in memory (heap)
 - used when we have variable number of items, eg, prices of items at a store, or list of participants in a conference etc.
@@ -91,7 +91,7 @@ for i in &mut v{
 
 ## Strings
 
-= String is a collection of bytes
+- String is a collection of bytes
 - Rust has only one `string` type in the core language -> and this a string slice `str`
 - This is usually used in a borrowed state in the form of `&str`
 
@@ -112,7 +112,7 @@ for i in &mut v{
 ```
 
 
-- To create a new `string` literal, we can simplyt assign a string as below
+- To create a new `string` literal, we can simply assign a string as below
 
 ```
  let d = "some random content"; // this creates a string literal
@@ -169,5 +169,56 @@ fn add(self, s: &str) -> String {
 
 - Note also that the first argument in `+` is owned rather than borrowed -> so it will no longer be valid after the + operation
 
-- 
+- To add multiple strings `+` operator becomes confusing -> for such cases, `format` is the way to go 
+
+
+```
+fn main(){
+    let s1 = String::from("tic");
+    let s2 = String::from("tac");
+    let s3 = String::from("toe");
+
+    let s = s1 + "-" + &s2 + "-" + &s3;
+    println!("value of added string {}", s);
+
+}
+
+```
+
+
+```
+fn main(){
+    let s1 = String::from("tic");
+    let s2 = String::from("tac");
+    let s3 = String::from("toe");
+
+    let s = format!("{s1}-{s2}-{s3}");
+    println!("value of s is {s}");
+}
+```
+- Note that format! uses references - its much easier to use without the risk of transferring owenership
+
+
+**How does Rust store Strings**
+
+- It is noteworthy that Rust does not support accessing individual characters in a string. For eg, the following throws and error
+
+
+```
+fn main(){
+    
+    let s = String::from("hello");
+    let s_char = s[2]; // trying to access a specific character leads to an error
+
+}
+
+```
+
+- unicode scalare values may be made up of more than 1 byte
+- it is important to note that for some UTf-8 encodings, indexing on strings will not work as each character has more than 1 byte
+
+
+
+
+
 
